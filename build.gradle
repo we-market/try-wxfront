@@ -1,0 +1,41 @@
+buildscript {
+    ext {
+        springBootVersion = '2.1.2.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'cn.wemarket'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+    mavenCentral()
+}
+
+List apache_commons= [
+        "org.apache.commons:commons-text:1.4",
+        "org.apache.commons:commons-configuration2:2.2"
+]
+
+def httpclient = [
+        "org.apache.httpcomponents:httpclient:4.5.6"
+]
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web-services'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    
+    compile apache_commons, httpclient
+    testCompile apache_commons, httpclient
+    runtime apache_commons, httpclient
+}
