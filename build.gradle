@@ -31,11 +31,15 @@ def httpclient = [
         "org.apache.httpcomponents:httpclient:4.5.6"
 ]
 
+def jackson = [
+        "com.fasterxml.jackson.core:jackson-core:2.9.8"
+]
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web-services'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     
-    compile apache_commons, httpclient
-    testCompile apache_commons, httpclient
-    runtime apache_commons, httpclient
+    compile apache_commons, httpclient, jackson
+    testCompile apache_commons, httpclient, jackson
+    runtime apache_commons, httpclient, jackson
 }
