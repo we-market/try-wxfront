@@ -1,5 +1,6 @@
 package cn.wemarket.wxfront.common.dto;
 
+import cn.wemarket.wxfront.common.StatusEnum;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class WeChatLoginResponseDTO extends WechatBaseResponseDTO{
@@ -12,6 +13,10 @@ public class WeChatLoginResponseDTO extends WechatBaseResponseDTO{
 
     //用户在开放平台的唯一标识符
     private String unionid;
+
+    public WeChatLoginResponseDTO(StatusEnum statusEnum) {
+        super(statusEnum);
+    }
 
     public String getOpenid() {
         return openid;
