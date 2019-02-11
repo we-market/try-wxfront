@@ -1,32 +1,13 @@
 package cn.wemarket.wxfront.common.dto;
 
 import cn.wemarket.wxfront.common.StatusEnum;
+import cn.wemarket.wxfront.web.function.dto.BaseResponseDTO;
 
-public class WechatBaseResponseDTO {
-    //错误码
-    private String errcode;
-
-    //错误码描述
-    private String errmsg;
-
-    public WechatBaseResponseDTO(StatusEnum statusEnum){
-        this.errcode = statusEnum.getCode();
-        this.errmsg = statusEnum.getMsg();
+public class WechatBaseResponseDTO extends BaseResponseDTO {
+    public WechatBaseResponseDTO(){
+        super();
     }
-
-    public String getErrcode() {
-        return errcode;
-    }
-
-    public void setErrcode(String errcode) {
-        this.errcode = errcode;
-    }
-
-    public String getErrmsg() {
-        return errmsg;
-    }
-
-    public void setErrmsg(String errmsg) {
-        this.errmsg = errmsg;
+    public WechatBaseResponseDTO(StatusEnum statusEnum) {
+        super(statusEnum);
     }
 }

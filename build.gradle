@@ -35,11 +35,19 @@ def jackson = [
         "com.fasterxml.jackson.core:jackson-core:2.9.8"
 ]
 
+def guava = [
+        "com.google.guava:guava:23.0"
+]
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web-services'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     
-    compile apache_commons, httpclient, jackson
-    testCompile apache_commons, httpclient, jackson
-    runtime apache_commons, httpclient, jackson
+    compile apache_commons, httpclient, jackson, guava
+    testCompile apache_commons, httpclient, jackson, guava
+    runtime apache_commons, httpclient, jackson, guava
+}
+
+tasks.withType(Jar) {
+    destinationDir = file("$rootDir/build/libs")      //$rootDir 取项目的顶级目录
 }

@@ -1,4 +1,6 @@
 package cn.wemarket.wxfront.common.dto;
 
-public class WeChatBaseRequestDTO {
+import cn.wemarket.wxfront.web.function.dto.BaseDTO;
+
+public class WeChatBaseRequestDTO extends BaseDTO {
 }

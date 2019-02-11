@@ -1,8 +1,8 @@
 package cn.wemarket.wxfront.biz.service;
 
 import cn.wemarket.wxfront.common.dto.WeChatLoginRequestDTO;
-import cn.wemarket.wxfront.common.dto.WechatBaseResponseDTO;
+import cn.wemarket.wxfront.common.dto.WeChatLoginResponseDTO;
 
 public interface WeChatService {
-    public WechatBaseResponseDTO login(WeChatLoginRequestDTO requestDTO);
+    public WeChatLoginResponseDTO login(WeChatLoginRequestDTO requestDTO);
 }

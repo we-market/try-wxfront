@@ -32,23 +32,26 @@ public class WechatServiceImpl implements WeChatService {
     private WeChatSAO weChatSAO;
 
     @Override
-    public WechatBaseResponseDTO login(WeChatLoginRequestDTO requestDTO) {
-        WeChatLoginResponseDTO responseDTO = null;
+    public WeChatLoginResponseDTO login(WeChatLoginRequestDTO requestDTO) {
+        WeChatLoginResponseDTO responseDTO = new WeChatLoginResponseDTO();
         if (StringUtils.isEmpty(requestDTO.getJsCode()) || StringUtils.isEmpty(requestDTO.getAppId())){
             LOGGER.info("invalid request !");
-            return new WechatBaseResponseDTO(StatusEnum.INVALID_REQUEST);
+            responseDTO.setResponseStatus(StatusEnum.INVALID_REQUEST);
+            return responseDTO;
         }
         List<NameValuePair> params = setURLParams(requestDTO);
         String response = weChatSAO.jscode2Session(params);
         if (response == null){
             LOGGER.info("fail to login...");
-            return new WechatBaseResponseDTO(StatusEnum.INTERNAL_SERVER_ERROR);
+            responseDTO.setResponseStatus(StatusEnum.INTERNAL_SERVER_ERROR);
+            return responseDTO;
         }
 
         responseDTO = JSON_MAPPER.fromJson(response, WeChatLoginResponseDTO.class);
         if (responseDTO == null){
             LOGGER.info("fail to parse json...");
-            return new WechatBaseResponseDTO(StatusEnum.INTERNAL_SERVER_ERROR);
+            responseDTO.setResponseStatus(StatusEnum.INTERNAL_SERVER_ERROR);
+            return responseDTO;
         }
 
         return responseDTO;

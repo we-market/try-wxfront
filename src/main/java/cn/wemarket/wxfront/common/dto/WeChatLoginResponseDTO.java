@@ -14,6 +14,10 @@ public class WeChatLoginResponseDTO extends WechatBaseResponseDTO{
     //用户在开放平台的唯一标识符
     private String unionid;
 
+    public WeChatLoginResponseDTO(){
+        super();
+    }
+
     public WeChatLoginResponseDTO(StatusEnum statusEnum) {
         super(statusEnum);
     }
@@ -40,5 +44,10 @@ public class WeChatLoginResponseDTO extends WechatBaseResponseDTO{
 
     public void setUnionid(String unionid) {
         this.unionid = unionid;
+    }
+
+    public void setResponseStatus(StatusEnum status){
+        setErrcode(status.getCode());
+        setErrmsg(status.getMsg());
     }
 }
