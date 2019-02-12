@@ -13,6 +13,8 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+//apply plugin: 'application'
+//mainClassName = "cn.wemarket.wxfront.biz.server.WxfrontApplication"
 
 group = 'cn.wemarket'
 version = '0.0.1-SNAPSHOT'
@@ -39,15 +41,49 @@ def guava = [
         "com.google.guava:guava:23.0"
 ]
 
+
+configurations {
+    //remove default logger
+    providedRuntime
+    compile.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+}
+
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web-services'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    
+
+    compile ('org.springframework.boot:spring-boot-starter-log4j2')
+
+    compile('org.springframework.boot:spring-boot-starter-web')
+
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+
     compile apache_commons, httpclient, jackson, guava
     testCompile apache_commons, httpclient, jackson, guava
     runtime apache_commons, httpclient, jackson, guava
 }
 
-tasks.withType(Jar) {
-    destinationDir = file("$rootDir/build/libs")      //$rootDir 取项目的顶级目录
+jar {
+    configurations.runtime.each { println it.path }
+    println "========="
+    configurations.compile.each { println it.path }
+    println "========="
+
+
+    from {
+        //添加依懒到打包文件
+        configurations.runtime.collect { zipTree(it) }
+    }
+    manifest {
+        attributes 'Main-Class': "cn.wemarket.wxfront.biz.server.WxfrontApplication"
+    }
 }
+
+task clearJar(type: Delete) {
+    delete 'build/libs/lib'
+}
+
+task copyJar(type: Copy) {
+    from configurations.runtime
+    into('build/libs/lib')
+}
+
+task release(type: Copy, dependsOn: [build, clearJar, copyJar])

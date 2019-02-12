@@ -92,30 +92,11 @@ public abstract class BaseController {
         return deferredResult;
     }
 
-    protected <E extends BaseDTO, T> DeferredResult<T> execute(
-            final HttpServletRequest httpServletRequest,
-            final HttpServletResponse httpServletResponse,
-            E requestDTO,
-            ExecServiceTemplate<E, T> template,
-            T timecoutReturnDefaultObject,
-            T exceptionReturnDefaultObject,
-            long timeoutMilliSeconds) {
-
-            return execute(httpServletRequest,
-                    httpServletResponse,
-                    requestDTO,
-                    timeoutMilliSeconds,
-                    template,
-                    timecoutReturnDefaultObject,
-                    exceptionReturnDefaultObject,
-                    false);
-    }
-
     /**
      * Controller类的入口方法。
      *
      * @param httpServletRequest               HttpServlet请求，主要为了处理国际化参数,预留接口
-     * @param httpServlvetResponse             HttpServlet响应
+     * @param httpServletResponse             HttpServlet响应
      * @param requestDTO                       业务请求对象，继承BaseDTO
      * @param timeoutMilliSeconds              服务请求超时时间，单位:秒
      * @param template                         执行模板，主要为了封装固有的业务处理流程
@@ -125,12 +106,14 @@ public abstract class BaseController {
      * @param exceptionReturndefaultWebMessage 异常返回对象
      * @return DeferredResult&lt;WebMessage&lt;T&gt;&gt;
      */
-
     protected <E extends BaseDTO, T> DeferredResult<T> execute(
-            HttpServletRequest httpServletRequest, HttpServletResponse httpServlvetResponse,
-            E requestDTO, long timeoutMilliSeconds, ExecServiceTemplate<E, T> template,
+            HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse,
+            E requestDTO,
+            ExecServiceTemplate<E, T> template,
             T timeoutReturndefaultWebMessage,
-            T exceptionReturndefaultWebMessage, boolean throwHttpResponseErrorWhenException) {
+            T exceptionReturndefaultWebMessage,
+            long timeoutMilliSeconds) {
         DeferredResult<T> deferredResult = null;
         try {
             // 检查超时时间不能超过defaultMaxTimeout秒，默认100秒（100_000）
@@ -152,14 +135,12 @@ public abstract class BaseController {
             Locale locale = getLocale(httpServletRequest);
             DeferredResultRunnable<E, T> r = new DeferredResultRunnable<E, T>(method, requestUri,
                     deferredResult, template, requestDTO, locale, bundleMessageSource,
-                    httpServletRequest, httpServlvetResponse, exceptionReturndefaultWebMessage,
-                    throwHttpResponseErrorWhenException);
+                    httpServletRequest, httpServletResponse, exceptionReturndefaultWebMessage,
+                    false);
 
             frontTaskExecutor.submit(r);
         } catch (Exception e) {
             LOGGER.error("execute fail", e);
-
-
             T m = exceptionReturndefaultWebMessage;
 
             if (m != null && (m instanceof BaseResponseDTO)) {
@@ -169,10 +150,6 @@ public abstract class BaseController {
 
             deferredResult = new DeferredResult<T>();
             deferredResult.setResult(m);
-
-            if (throwHttpResponseErrorWhenException) {
-                httpServlvetResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            }
         }
         return deferredResult;
     }
@@ -230,15 +207,8 @@ public abstract class BaseController {
             T responseObject = null;
             T result = null;
             long beginTime = System.currentTimeMillis();
-            String callerClassName = "unknow";
-            String callerMethodName = "unknow";
-            String statusCode = StatusEnum.SUCCESS.getCode();
             try {
                 // 1.set context bind thread
-                if (this.callerMethod != null) {
-                    callerClassName = this.callerMethod.getDeclaringClass().getName();
-                    callerMethodName = this.callerMethod.getName();
-                }
                 BaseResponseDTO preServiceResult = preService(requestDto, httpServletRequest,
                         httpServletResponse, this.callerMethod, this.requestUri);
 
@@ -255,24 +225,16 @@ public abstract class BaseController {
 
 
                     }
-
                     deferredResult.setResult(returnMsg);
                     return;
                 }
-
-
                 // 2.call biz service
                 BizErrors bizErrors = new BizErrors();
-
                 result = this.service.apply(requestDto, bizErrors);
-
                 responseObject =
                         handleSuccessResponseMessage(result, bizErrors, locale, bundleMessageSource);
-
-
                 postService(requestDto, responseObject, this.httpServletRequest,
                         this.httpServletResponse, this.callerMethod, this.requestUri, bizErrors);
-
             } catch (Exception e) {
                 // 3.error handle
                 LOGGER.error("service error,request message:" + requestDto, e);
@@ -287,7 +249,7 @@ public abstract class BaseController {
 
                 long endTime = System.currentTimeMillis();
                 long responseTime = endTime - beginTime;
-
+                LOGGER.info("response using {} seconds", responseTime);
             }
 
 

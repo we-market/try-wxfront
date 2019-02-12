@@ -13,9 +13,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Consts;
-import org.apache.http.HttpHost;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
@@ -48,39 +46,29 @@ public class HttpClientFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(HttpClientFactory.class);
 
-    @Value("${ias.pafront.httpclient.validate.inactivitymillseconds:1000}")
+    @Value("${try.wxfront.httpclient.validate.inactivitymillseconds:1000}")
     private int validateInactivityMillSeconds;
 
-    @Value("${ias.pafront.httpclient.message.maxheadercount:200}")
+    @Value("${try.wxfront.httpclient.message.maxheadercount:200}")
     private int messageMaxHeaderCount;
 
-    @Value("${ias.pafront.httpclient.message.maxlinelength:2000}")
+    @Value("${try.wxfront.httpclient.message.maxlinelength:2000}")
     private int messageMaxLineLength;
 
-    @Value("${ias.pafront.httpclient.connection.maxtotal:200}")
+    @Value("${try.wxfront.httpclient.connection.maxtotal:200}")
     private int connMaxTotal;
 
-    @Value("${ias.pafront.httpclient.connection.defaultmaxperroute:200}")
+    @Value("${try.wxfront.httpclient.connection.defaultmaxperroute:200}")
     private int connDefaultMaxPerRoute;
 
-    @Value("${ias.pafront.httpclient.connection.evictidletimoutmillseconds:5000}")
+    @Value("${try.wxfront.httpclient.connection.evictidletimoutmillseconds:5000}")
     private int connEvictIdleConnectionsTimeoutMillSeconds;
 
-    @Value("${ias.pafront.httpclient.socket.connecttimeout:3000}")
+    @Value("${try.wxfront.httpclient.socket.connecttimeout:3000}")
     private int connectTimeout;
 
-    @Value("${ias.pafront.httpclient.socket.sockettimeout:5000}")
+    @Value("${try.wxfront.httpclient.socket.sockettimeout:5000}")
     private int socketTimeout;
-
-    @Value("${ias.pafront.httpclient.proxyip}")
-    private String proxyIp;
-
-    @Value("${ias.pafront.httpclient.proxyport:9090}")
-    private int proxyPort;
-
-    @Value("${ias.pafront.cert.password}")
-    private String certPassword;
-
 
     public static RequestConfig resetRequestConfig(int socketTimeout, int connectTimeout) {
         return RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT)
@@ -161,11 +149,6 @@ public class HttpClientFactory {
                 .setDefaultCookieStore(cookieStore)
                 .setDefaultRequestConfig(defaultRequestConfig).evictExpiredConnections()
                 .evictIdleConnections(connEvictIdleConnectionsTimeoutMillSeconds, TimeUnit.MILLISECONDS);
-
-        if (StringUtils.isNoneBlank(proxyIp)) {
-            HttpHost proxy = new HttpHost(proxyIp, proxyPort, "http");
-            httpClientBuilder.setProxy(proxy);
-        }
 
         return httpClientBuilder.build();
 
@@ -377,11 +360,6 @@ public class HttpClientFactory {
             .setDefaultRequestConfig(defaultRequestConfig).evictExpiredConnections()
             .evictIdleConnections(connEvictIdleConnectionsTimeoutMillSeconds, TimeUnit.MILLISECONDS)
             .setSSLSocketFactory(sslsf);
-        
-        if (StringUtils.isNoneBlank(proxyIp)) {
-          HttpHost proxy = new HttpHost(proxyIp, proxyPort, "http");
-          httpClientBuilder.setProxy(proxy);
-        }
         
         CloseableHttpClient httpclient = httpClientBuilder.build();
         return httpclient;
