@@ -33,7 +33,7 @@ public class LoginController extends WeChatBaseController{
             @RequestParam(value = "js_code", required = true) String jsCode,
             HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse){
-        LOGGER.info("User Login |request appid:{}, js_code:{}", appId, jsCode);
+        LOGGER.info("User Login... |request --- appid:{}| js_code:{}", appId, jsCode);
         WeChatLoginRequestDTO loginRequestDTO = new WeChatLoginRequestDTO();
         loginRequestDTO.setAppId(appId);
         loginRequestDTO.setJsCode(jsCode);
