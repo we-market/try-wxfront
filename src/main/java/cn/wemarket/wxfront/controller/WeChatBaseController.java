@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 
 public class WeChatBaseController extends BaseController {
-    @Value("wemarket.wxfront.web.request-timeout-millseconds")
+    @Value("${wemarket.wxfront.web.request-timeout-millseconds}")
     private int requestTimeout;
 
     public int getRequestTimeout(){
