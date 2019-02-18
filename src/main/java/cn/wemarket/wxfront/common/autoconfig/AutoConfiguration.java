@@ -58,7 +58,7 @@ public class AutoConfiguration {
     }
 
     @Bean("messageSource")
-    public MessageSource messageSource(){
+    public ReloadableResourceBundleMessageSource messageSource(){
         ReloadableResourceBundleMessageSource messageSource =
                 new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:messages");

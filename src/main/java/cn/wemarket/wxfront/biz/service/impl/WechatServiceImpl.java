@@ -63,9 +63,9 @@ public class WechatServiceImpl implements WeChatService {
     private List<NameValuePair> setURLParams(WeChatLoginRequestDTO requestDTO){
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("appid", requestDTO.getAppId()));
-        params.add(new BasicNameValuePair("js_code", requestDTO.getJsCode()));
         params.add(new BasicNameValuePair("secret", appSecret));
-        params.add(new BasicNameValuePair("js_code", "authorization_code"));
+        params.add(new BasicNameValuePair("js_code", requestDTO.getJsCode()));
+        params.add(new BasicNameValuePair("grant_type", "authorization_code"));
 
         return params;
 
